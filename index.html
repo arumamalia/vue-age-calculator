@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Age Calculator</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: grid;
+            place-items: center;
+            background-color: #F0F0F0;
+        }
+
+        input:focus{
+            border-color: rgb(168 162 158);
+            border-width: 2px;
+            outline: none;
+        }
+
+        button:hover {
+            transform: scale(1.1); 
+        }
+
+        .container {
+            border-bottom-right-radius: 30%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <div class="max-w-2xl bg-white rounded-tl-3xl rounded-tr-3xl rounded-bl-3xl p-10 container">
+            <form @submit.prevent="validateForm">
+                <div class="flex flex-col">
+                    <div class="flex flex-row gap-6 w-4/5">
+                        <div class="flex flex-col gap-1">
+                            <label class="font-bold tracking-widest text-xs" :class="errorField.day ? 'text-red-600' : 'text-gray-500'">
+                                DAY
+                            </label>
+                            <input type="text" placeholder="DD"
+                                class="border rounded font-bold text-2xl py-2 px-4 w-full text-gray-600" :class="errorField.day ? 'border-red-600' : 'border-stone-300'" v-model="day"
+                                maxlength="2">
+                            <p class="text-xs italic text-red-600" v-if="errors.day">{{ errors.day }}</p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="font-bold tracking-widest text-xs" :class="errorField.month ? 'text-red-600' : 'text-gray-500'">
+                                MONTH
+                            </label>
+                            <input type="text" placeholder="MM"
+                                class="border rounded font-bold text-2xl py-2 px-4 w-full text-gray-600" :class="errorField.month ? 'border-red-600' : 'border-stone-300'" v-model="month"
+                                maxlength="2">
+                            <p class="text-xs italic text-red-600" v-if="errors.month">{{ errors.month }}</p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="font-bold tracking-widest text-xs" :class="errorField.year ? 'text-red-600' : 'text-gray-500'">
+                                YEAR
+                            </label>
+                            <input type="text" placeholder="YYYY"
+                                class="border rounded font-bold text-2xl py-2 px-4 w-full text-gray-600" :class="errorField.year ? 'border-red-600' : 'border-stone-300'" v-model="year"
+                                maxlength="4">
+                            <p class="text-xs italic text-red-600" v-if="errors.year">{{ errors.year }}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-row items-center gap-1 my-2">
+                        <hr class="grow bg-slate-500 border">
+                        <button type="submit">
+                            <img width="70" src="icon-arrow.png">
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div class="flex flex-col">
+                <div class="flex flex-row gap-2">
+                    <p class="font-bold text-7xl italic text-sky-500"> 
+                        <span
+                            v-for="(char, index) in age.years" 
+                            :key="index" 
+                        >
+                            {{ char }} 
+                        </span>
+                    </p>
+                    <p class="font-bold text-7xl italic text-gray-600"> years</p>
+                </div>
+                <div class="flex flex-row gap-2">
+                    <p class="font-bold text-7xl italic text-sky-500"> 
+                        <span
+                            v-for="(char, index) in age.months" 
+                            :key="index" 
+                        >
+                            {{ char }} 
+                        </span>
+                    </p>
+                    <p class="font-bold text-7xl italic text-gray-600"> months</p>
+                </div>
+                <div class="flex flex-row gap-2">
+                    <p class="font-bold text-7xl italic text-sky-500"> 
+                        <span
+                            v-for="(char, index) in age.days" 
+                            :key="index" 
+                        >
+                            {{ char }} 
+                        </span>
+                    </p>
+                    <p class="font-bold text-7xl italic text-gray-600"> days</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    day: '',
+                    month: '',
+                    year: '',
+                    errors: {
+                        day: '',
+                        month: '',
+                        year: ''
+                    },
+                    age: {
+                        years: ['0', '0'],
+                        months: ['0', '0'],
+                        days: ['0', '0']
+                    },
+                    errorField: {
+                        day: false,
+                        month: false,
+                        year: false
+                    }
+                };
+            },
+
+            methods: {
+                validateForm() {
+                    this.resetError();
+
+                    const fields = [
+                        {   
+                            name: 'day',
+                            value: this.day
+                        },
+                        {   
+                            name: 'month',
+                            value: this.month
+                        },
+                        {   
+                            name: 'year',
+                            value: this.year
+                        },
+                    ];
+
+                    fields.forEach((field) => {
+                        const errorMessage = this.validateField(field.name, field.value);
+                        this.setFieldError(field.name, errorMessage);
+                    });
+
+                    if (Object.values(this.errorField).every(error => !error)) {
+                        const dob = new Date(this.month + '-' + this.day + '-' + this.year);
+
+                        if (this.day != dob.getDate()) this.setFieldError('day', 'Must be a valid date!');
+                        else this.calculateAge(this.day, this.month, this.year);
+                    }
+
+                },
+
+                validateField(fieldName, value) {
+                    if (!value) return "This field is required";
+
+                    let errorMessage = ""
+
+                    const validation = {
+                        day: (value) => {
+                            if (value < 1 || value > 31) errorMessage = "Must be a valid day!"; 
+                            const dob = new Date(this.month + '-' + this.day + '-' + this.year);
+                        },
+                        month: (value) => {
+                            if (value < 1 || value > 12) errorMessage = "Must be a valid month!"
+                        },
+                        year: (value) => {
+                            const today = new Date();
+                            const year = today.getFullYear();
+                            if (this.year > year) errorMessage = "Must be a in the past!"
+                        }
+                    }
+                     
+                    validation[fieldName](value);
+
+                    return errorMessage;
+                },
+
+                setFieldError(fieldName, message) {
+                    this.errors[fieldName] = message;
+                    this.errorField[fieldName] = !!message;
+                },
+
+                resetError() {
+                    this.errors = {};
+                    const fields = ["day", "month", "year"];
+                    fields.forEach((field) => this.errorField[field] = false);
+                },
+                
+                async calculateAge(day, month, year) {
+                    today = new Date();
+
+                    years = today.getFullYear() - year;
+                    months = (today.getMonth() + 1)- month;
+                    days = today.getDate() - day;
+
+                    if (months < 0 || (months === 0 && days < 0)) {
+                        years--;
+                        if (months < 0) {
+                            months += 12;
+                        }
+                    }
+
+                    if (days < 0) {
+                        months--;
+                        lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                        days += lastMonth.getDate();
+                    }
+
+                    await Promise.all([
+                        this.resetAge('years'),
+                        this.resetAge('months'),
+                        this.resetAge('days'),
+                    ]);
+
+                    this.updateAge('years', years);
+                    this.updateAge('months', months);
+                    this.updateAge('days', days);
+                },
+
+                updateAge(field, value) {
+                    let currentValue = Number(this.age[field].join(''));
+                    currentValue++;
+                    this.age[field] = currentValue.toString().padStart(2, '0').split('');
+                    if (currentValue < value) {
+                        setTimeout(() => {
+                            this.updateAge(field, value);
+                        }, currentValue / value * 100)
+                    }
+                },
+
+                resetAge(field) {
+                    return new Promise((resolve) => {
+                        let currentValue = Number(this.age[field].join(''));
+                        currentValue--;
+                        this.age[field] = currentValue.toString().padStart(2, '0').split('');
+                        if (currentValue > 0) {
+                            setTimeout(async () => {
+                                await this.resetAge(field);
+                                resolve();
+                            }, 10);
+                        } else {
+                            resolve();
+                        }
+                    });
+                },
+
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
