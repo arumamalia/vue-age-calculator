@@ -21,32 +21,12 @@
             height: 100%;
         }
 
-        body {
-            display: grid;
-            place-items: center;
-            background-color: #F0F0F0;
-        }
-
-        input:focus{
-            border-color: rgb(168 162 158);
-            border-width: 2px;
-            outline: none;
-        }
-
-        button:hover {
-            transform: scale(1.1); 
-        }
-
-        .container {
-            border-bottom-right-radius: 30%;
-        }
     </style>
 </head>
 
-<body>
+<body class="grid place-items-center bg-[#F0F0F0]">
     <div id="app">
-
-        <div class="max-w-2xl bg-white rounded-tl-3xl rounded-tr-3xl rounded-bl-3xl p-10 container">
+        <div class="max-w-2xl bg-white rounded-tl-3xl rounded-tr-3xl rounded-bl-3xl rounded-br-[30%] p-10">
             <form @submit.prevent="validateForm">
                 <div class="flex flex-col">
                     <div class="flex flex-row gap-6 w-4/5">
@@ -54,33 +34,27 @@
                             <label class="font-bold tracking-widest text-xs" :class="errorField.day ? 'text-red-600' : 'text-gray-500'">
                                 DAY
                             </label>
-                            <input type="text" placeholder="DD"
-                                class="border rounded font-bold text-2xl py-2 px-4 w-full text-gray-600" :class="errorField.day ? 'border-red-600' : 'border-stone-300'" v-model="day"
-                                maxlength="2">
+                            <input type="text" placeholder="DD" class="border rounded font-bold text-2xl py-2 px-4 w-full text-gray-600 focus:border-gray-400 focus:border-2 focus:outline-none" :class="errorField.day ? 'border-red-600' : 'border-stone-300'" v-model="day" maxlength="2">
                             <p class="text-xs italic text-red-600" v-if="errors.day">{{ errors.day }}</p>
                         </div>
                         <div class="flex flex-col gap-1">
                             <label class="font-bold tracking-widest text-xs" :class="errorField.month ? 'text-red-600' : 'text-gray-500'">
                                 MONTH
                             </label>
-                            <input type="text" placeholder="MM"
-                                class="border rounded font-bold text-2xl py-2 px-4 w-full text-gray-600" :class="errorField.month ? 'border-red-600' : 'border-stone-300'" v-model="month"
-                                maxlength="2">
+                            <input type="text" placeholder="MM" class="border rounded font-bold text-2xl py-2 px-4 w-full text-gray-600 focus:border-gray-400 focus:border-2 focus:outline-none" :class="errorField.month ? 'border-red-600' : 'border-stone-300'" v-model="month" maxlength="2">
                             <p class="text-xs italic text-red-600" v-if="errors.month">{{ errors.month }}</p>
                         </div>
                         <div class="flex flex-col gap-1">
                             <label class="font-bold tracking-widest text-xs" :class="errorField.year ? 'text-red-600' : 'text-gray-500'">
                                 YEAR
                             </label>
-                            <input type="text" placeholder="YYYY"
-                                class="border rounded font-bold text-2xl py-2 px-4 w-full text-gray-600" :class="errorField.year ? 'border-red-600' : 'border-stone-300'" v-model="year"
-                                maxlength="4">
+                            <input type="text" placeholder="YYYY" class="border rounded font-bold text-2xl py-2 px-4 w-full text-gray-600 focus:border-gray-400 focus:border-2 focus:outline-none" :class="errorField.year ? 'border-red-600' : 'border-stone-300'" v-model="year" maxlength="4">
                             <p class="text-xs italic text-red-600" v-if="errors.year">{{ errors.year }}</p>
                         </div>
                     </div>
                     <div class="flex flex-row items-center gap-1 my-2">
                         <hr class="grow bg-slate-500 border">
-                        <button type="submit">
+                        <button type="submit" class="hover:scale-110">
                             <img width="70" src="icon-arrow.png">
                         </button>
                     </div>
@@ -120,11 +94,8 @@
                     </p>
                     <p class="font-bold text-7xl italic text-gray-600"> days</p>
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <script>
